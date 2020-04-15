@@ -1,19 +1,24 @@
 package com.freeman.covid.models;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
+//@Entity
+@Document
 public class CoronaState {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
     private String lastUpdate;
     private Integer confirmedQuantity;
     private Integer deathsQuantity;
     private Integer recoveredQuantity;
-    @OneToOne(cascade = {CascadeType.ALL})
+//    @OneToOne(cascade = {CascadeType.ALL})
+    @Field
     private DetectionPlace detectionPlace;
 
     public CoronaState() {
@@ -29,7 +34,7 @@ public class CoronaState {
         this.detectionPlace = detectionPlace;
     }
 
-    public CoronaState(Integer id, String lastUpdate,
+    public CoronaState(String id, String lastUpdate,
                        Integer confirmedQuantity, Integer deathsQuantity,
                        Integer recoveredQuantity, DetectionPlace detectionPlace) {
         this.id = id;
@@ -40,11 +45,11 @@ public class CoronaState {
         this.detectionPlace = detectionPlace;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

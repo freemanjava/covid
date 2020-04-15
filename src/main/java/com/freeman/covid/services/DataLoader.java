@@ -1,9 +1,8 @@
 package com.freeman.covid.services;
 
 import com.freeman.covid.models.*;
+
 import com.freeman.covid.repositories.CoronaStateRepo;
-import com.freeman.covid.repositories.CountryRegionRepo;
-import com.freeman.covid.repositories.ProvinceStateRepo;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -26,12 +25,6 @@ public class DataLoader {
 
     @Autowired
     private CoronaStateRepo coronaStateRepo;
-
-    @Autowired
-    private CountryRegionRepo countryRegionRepo;
-
-    @Autowired
-    private ProvinceStateRepo provinceStateRepo;
 
     private static final String URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-16-2020.csv";
 
@@ -56,19 +49,27 @@ public class DataLoader {
         CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).withCSVParser(parser).build();
         List<String[]> records = csvReader.readAll();
         for (String[] strings : records){
-            String provinceState = strings[0];
-            String countryRegion = strings[1];
-            String lastUpdate = strings[2];
-            String confirmedQuantity = strings[3];
-            String deathsQuantity = strings[4];
-            String recoveredQuantity = strings[5];
-            String latitude = strings[6];
-            String longitude = strings[7];
-            CountryRegion country = countryRegionRepo.findCountryRegionByName(countryRegion);
-            if (country == null){
-//            if (countryRegionRepo.findByNameExists(countryRegion)){
-                country = new CountryRegion(countryRegion);
-            }
+            String provinceStateCSV = strings[0];
+            String countryRegionCSV = strings[1];
+            String lastUpdateCSV = strings[2];
+            String confirmedQuantityCSV = strings[3];
+            String deathsQuantityCSV = strings[4];
+            String recoveredQuantityCSV = strings[5];
+            String latitudeCSV = strings[6];
+            String longitudeCSV = strings[7];
+
+            CountryRegion countryRegion = new CountryRegion(countryRegionCSV);
+            ProvinceState provinceState = new ProvinceState(provinceStateCSV);
+            GeoPoint geoPoint = new GeoPoint(latitudeCSV, longitudeCSV);
+            DetectionPlace detectionPlace = new DetectionPlace(countryRegion, provinceState, geoPoint);
+            CoronaState coronaState = new CoronaState(lastUpdateCSV, Integer.parseInt(confirmedQuantityCSV),
+                    Integer.parseInt(deathsQuantityCSV), Integer.parseInt(recoveredQuantityCSV),detectionPlace);
+            coronaStateRepo.insert(coronaState);
+//            CountryRegion country = countryRegionRepo.findCountryRegionByName(countryRegion);
+//            if (country == null){
+////            if (countryRegionRepo.findByNameExists(countryRegion)){
+//                country = new CountryRegion(countryRegion);
+//            }
 //            else {
 //                country = countryRegionRepo.findCountryRegionByName(countryRegion);
 //            }

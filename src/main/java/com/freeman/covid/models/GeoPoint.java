@@ -1,17 +1,20 @@
 package com.freeman.covid.models;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
-@Entity
+//@Entity
+@Document
 public class GeoPoint {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
     private String latitude;
     private String longitude;
 
@@ -23,17 +26,17 @@ public class GeoPoint {
         this.longitude = longitude;
     }
 
-    public GeoPoint(Integer id, String latitude, String longitude) {
+    public GeoPoint(String id, String latitude, String longitude) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

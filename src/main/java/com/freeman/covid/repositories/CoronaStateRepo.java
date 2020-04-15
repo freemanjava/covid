@@ -1,10 +1,9 @@
 package com.freeman.covid.repositories;
 
 import com.freeman.covid.models.CoronaState;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CoronaStateRepo extends JpaRepository<CoronaState, Integer> {
+public interface CoronaStateRepo extends MongoRepository <CoronaState, Integer> {
 }
