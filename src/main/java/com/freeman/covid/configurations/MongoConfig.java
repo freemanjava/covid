@@ -23,6 +23,6 @@ public class MongoConfig {
 
     @Bean
     public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongo(), "test");
+        return new MongoTemplate(mongo(), "covid");
     }
 }

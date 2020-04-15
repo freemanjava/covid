@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 //@Entity
-@Document
+//@Document
 public class GeoPoint {
 
     @Id
@@ -22,12 +22,6 @@ public class GeoPoint {
     }
 
     public GeoPoint(String latitude, String longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
-    public GeoPoint(String id, String latitude, String longitude) {
-        this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
     }

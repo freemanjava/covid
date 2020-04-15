@@ -2,31 +2,24 @@ package com.freeman.covid.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.List;
 import java.util.Objects;
 
-//@Entity
-@Document
+//@Document
 public class CountryRegion {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String name;
+    private List<ProvinceState> provinceState;
 
     public CountryRegion() {
     }
 
-    public CountryRegion(String name) {
+    public CountryRegion(String name, List<ProvinceState> provinceState) {
         this.name = name;
-    }
-
-    public CountryRegion(String id, String name){
-        this.id = id;
-        this.name = name;
+        this.provinceState = provinceState;
     }
 
     public String getId() {
@@ -45,25 +38,35 @@ public class CountryRegion {
         this.name = name;
     }
 
+    public List<ProvinceState> getProvinceState() {
+        return provinceState;
+    }
+
+    public void setProvinceState(List<ProvinceState> provinceState) {
+        this.provinceState = provinceState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CountryRegion)) return false;
         CountryRegion that = (CountryRegion) o;
         return id.equals(that.id) &&
-                Objects.equals(name, that.name);
+                Objects.equals(name, that.name) &&
+                Objects.equals(provinceState, that.provinceState);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, provinceState);
     }
 
     @Override
     public String toString() {
         return "CountryRegion{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", provinceState=" + provinceState +
                 '}';
     }
 }

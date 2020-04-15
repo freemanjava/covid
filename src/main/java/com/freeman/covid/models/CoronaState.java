@@ -1,48 +1,24 @@
 package com.freeman.covid.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.Objects;
 
-//@Entity
 @Document
 public class CoronaState {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String lastUpdate;
-    private Integer confirmedQuantity;
-    private Integer deathsQuantity;
-    private Integer recoveredQuantity;
-//    @OneToOne(cascade = {CascadeType.ALL})
-    @Field
-    private DetectionPlace detectionPlace;
+    private CountryRegion countryRegion;
 
     public CoronaState() {
     }
 
-    public CoronaState(String lastUpdate, Integer confirmedQuantity,
-                       Integer deathsQuantity, Integer recoveredQuantity,
-                       DetectionPlace detectionPlace) {
+    public CoronaState(String lastUpdate, CountryRegion countryRegion) {
         this.lastUpdate = lastUpdate;
-        this.confirmedQuantity = confirmedQuantity;
-        this.deathsQuantity = deathsQuantity;
-        this.recoveredQuantity = recoveredQuantity;
-        this.detectionPlace = detectionPlace;
-    }
-
-    public CoronaState(String id, String lastUpdate,
-                       Integer confirmedQuantity, Integer deathsQuantity,
-                       Integer recoveredQuantity, DetectionPlace detectionPlace) {
-        this.id = id;
-        this.lastUpdate = lastUpdate;
-        this.confirmedQuantity = confirmedQuantity;
-        this.deathsQuantity = deathsQuantity;
-        this.recoveredQuantity = recoveredQuantity;
-        this.detectionPlace = detectionPlace;
+        this.countryRegion = countryRegion;
     }
 
     public String getId() {
@@ -61,36 +37,12 @@ public class CoronaState {
         this.lastUpdate = lastUpdate;
     }
 
-    public Integer getConfirmedQuantity() {
-        return confirmedQuantity;
+    public CountryRegion getCountryRegion() {
+        return countryRegion;
     }
 
-    public void setConfirmedQuantity(Integer confirmedQuantity) {
-        this.confirmedQuantity = confirmedQuantity;
-    }
-
-    public Integer getDeathsQuantity() {
-        return deathsQuantity;
-    }
-
-    public void setDeathsQuantity(Integer deathsQuantity) {
-        this.deathsQuantity = deathsQuantity;
-    }
-
-    public Integer getRecoveredQuantity() {
-        return recoveredQuantity;
-    }
-
-    public void setRecoveredQuantity(Integer recoveredQuantity) {
-        this.recoveredQuantity = recoveredQuantity;
-    }
-
-    public DetectionPlace getDetectionPlace() {
-        return detectionPlace;
-    }
-
-    public void setDetectionPlace(DetectionPlace detectionPlace) {
-        this.detectionPlace = detectionPlace;
+    public void setCountryRegion(CountryRegion countryRegion) {
+        this.countryRegion = countryRegion;
     }
 
     @Override
@@ -100,26 +52,20 @@ public class CoronaState {
         CoronaState that = (CoronaState) o;
         return id.equals(that.id) &&
                 Objects.equals(lastUpdate, that.lastUpdate) &&
-                Objects.equals(confirmedQuantity, that.confirmedQuantity) &&
-                Objects.equals(deathsQuantity, that.deathsQuantity) &&
-                Objects.equals(recoveredQuantity, that.recoveredQuantity) &&
-                Objects.equals(detectionPlace, that.detectionPlace);
+                Objects.equals(countryRegion, that.countryRegion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lastUpdate, confirmedQuantity, deathsQuantity, recoveredQuantity, detectionPlace);
+        return Objects.hash(id, lastUpdate, countryRegion);
     }
 
     @Override
     public String toString() {
         return "CoronaState{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", lastUpdate='" + lastUpdate + '\'' +
-                ", confirmedQuantity=" + confirmedQuantity +
-                ", deathsQuantity=" + deathsQuantity +
-                ", recoveredQuantity=" + recoveredQuantity +
-                ", detectionPlace=" + detectionPlace +
+                ", countryRegion=" + countryRegion +
                 '}';
     }
 }

@@ -13,10 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import sun.util.resources.LocaleData;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.StringReader;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,53 +62,27 @@ public class DataLoader {
             String latitudeCSV = strings[6];
             String longitudeCSV = strings[7];
 
-            CountryRegion countryRegion = new CountryRegion(countryRegionCSV);
-            ProvinceState provinceState = new ProvinceState(provinceStateCSV);
+            StatisticBySick statistic = new StatisticBySick(Integer.parseInt(confirmedQuantityCSV),
+                    Integer.parseInt(deathsQuantityCSV), Integer.parseInt(recoveredQuantityCSV));
             GeoPoint geoPoint = new GeoPoint(latitudeCSV, longitudeCSV);
-            DetectionPlace detectionPlace = new DetectionPlace(countryRegion, provinceState, geoPoint);
-            CoronaState coronaState = new CoronaState(lastUpdateCSV, Integer.parseInt(confirmedQuantityCSV),
-                    Integer.parseInt(deathsQuantityCSV), Integer.parseInt(recoveredQuantityCSV),detectionPlace);
-            coronaStateRepo.insert(coronaState);
-//            CountryRegion country = countryRegionRepo.findCountryRegionByName(countryRegion);
-//            if (country == null){
-////            if (countryRegionRepo.findByNameExists(countryRegion)){
-//                country = new CountryRegion(countryRegion);
-//            }
-//            else {
-//                country = countryRegionRepo.findCountryRegionByName(countryRegion);
-//            }
-//            ProvinceState province = provinceStateRepo.
-//            ProvinceState province = new ProvinceState(provinceState);
-//            DetectionPlace detectionPlace = new DetectionPlace();
-//            CoronaState coronaState = CoronaState.builder()
-//                    .detectionPlace(detectionPlace)
-//                    .lastUpdate(lastUpdate)
-//                    .confirmedQuantity(Integer.parseInt(confirmedQuantity))
-//                    .deathsQuantity(Integer.parseInt(deathsQuantity))
-//                    .recoveredQuantity(Integer.parseInt(recoveredQuantity))
-//                    .build();
-//            coronaStateRepo.save(coronaState);
-        }
-//        ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
-//        strategy.setType(CoronaState.class);
-//        String[] memberFieldsToBindTo = {"name", "email", "phoneNo", "country"};
-//        strategy.setColumnMapping(memberFieldsToBindTo);
-//        List forObject = restTemplate.getForObject("https://api.github.com/repos/CSSEGISandData/repo/releases", List.class);
-//        List<LinkedHashMap<String,String>> repos = restTemplate.getForObject("https://api.github.com/repos/CSSEGISandData/repo/releases", List.class);
-//        List<LinkedHashMap<String,String>> repos = restTemplate.getForObject("https://api.github.com/users/CSSEGISandData/repos", List.class);
+            List<ProvinceState> provinceStateList = new ArrayList<>();
+            ProvinceState provinceState = new ProvinceState(provinceStateCSV, lastUpdateCSV, geoPoint, statistic);
+            provinceStateList.add(provinceState);
+            CountryRegion countryRegion = new CountryRegion(countryRegionCSV, provinceStateList);
 
-//        for(LinkedHashMap<String,String>  repo : repos)
-//        {
-//            System.out.println(repo.get("name"));
-//        }
-//        GitHubClient client = this.gitHubClient.setCredentials("freemanjava", "Dragon75491_");
-//        RepositoryService service = new RepositoryService();
-//
-//        try {
-//            service.getRepository("CSSEGISandData","COVID-19");
-////            gitHubClient.getRepository("CSSEGISandData/COVID-19/csse_covid_19_daily_reports");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+            LocalDateTime time = LocalDateTime.now();
+//            LocaleDa updateDate = new LocaleData();//"2020-03-15T18:20:18"
+//            long time = updateDate.getTime();
+            CoronaState coronaState = new CoronaState(String.valueOf(time), countryRegion);
+            if (coronaStateRepo.existsCoronaStateByCountryRegion_Name(countryRegion.getName())){
+                CoronaState foundCoronaState = coronaStateRepo.findCoronaStateByCountryRegion_Name(countryRegion.getName());
+                List<ProvinceState> foundProvinceStateList = foundCoronaState.getCountryRegion().getProvinceState();
+                foundProvinceStateList.add(provinceState);
+                foundCoronaState.getCountryRegion().setProvinceState(foundProvinceStateList);
+                coronaStateRepo.save(foundCoronaState);
+            } else {
+                coronaStateRepo.insert(coronaState);
+            }
+        }
     }
 }
