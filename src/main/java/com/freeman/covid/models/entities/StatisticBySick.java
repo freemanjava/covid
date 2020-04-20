@@ -1,20 +1,28 @@
-package com.freeman.covid.models;
+package com.freeman.covid.models.entities;
+
+import com.opencsv.bean.CsvBindByName;
 
 import java.util.Objects;
 
 public class StatisticBySick {
 
+    @CsvBindByName(column = "Confirmed")
     private Integer confirmedQuantity;
+    @CsvBindByName(column = "Deaths")
     private Integer deathsQuantity;
+    @CsvBindByName(column = "Recovered")
     private Integer recoveredQuantity;
+    @CsvBindByName(column = "Active")
+    private Integer active;
 
     public StatisticBySick() {
     }
 
-    public StatisticBySick(Integer confirmedQuantity, Integer deathsQuantity, Integer recoveredQuantity) {
+    public StatisticBySick(Integer confirmedQuantity, Integer deathsQuantity, Integer recoveredQuantity, Integer active) {
         this.confirmedQuantity = confirmedQuantity;
         this.deathsQuantity = deathsQuantity;
         this.recoveredQuantity = recoveredQuantity;
+        this.active = active;
     }
 
     public Integer getConfirmedQuantity() {
@@ -41,19 +49,28 @@ public class StatisticBySick {
         this.recoveredQuantity = recoveredQuantity;
     }
 
+    public Integer getActive() {
+        return active;
+    }
+
+    public void setActive(Integer active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof StatisticBySick)) return false;
-        StatisticBySick that = (StatisticBySick) o;
-        return Objects.equals(confirmedQuantity, that.confirmedQuantity) &&
-                Objects.equals(deathsQuantity, that.deathsQuantity) &&
-                Objects.equals(recoveredQuantity, that.recoveredQuantity);
+        StatisticBySick statistic = (StatisticBySick) o;
+        return Objects.equals(confirmedQuantity, statistic.confirmedQuantity) &&
+                Objects.equals(deathsQuantity, statistic.deathsQuantity) &&
+                Objects.equals(recoveredQuantity, statistic.recoveredQuantity) &&
+                Objects.equals(active, statistic.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(confirmedQuantity, deathsQuantity, recoveredQuantity);
+        return Objects.hash(confirmedQuantity, deathsQuantity, recoveredQuantity, active);
     }
 
     @Override
@@ -62,6 +79,7 @@ public class StatisticBySick {
                 "confirmedQuantity=" + confirmedQuantity +
                 ", deathsQuantity=" + deathsQuantity +
                 ", recoveredQuantity=" + recoveredQuantity +
+                ", active=" + active +
                 '}';
     }
 }

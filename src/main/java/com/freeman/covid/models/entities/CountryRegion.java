@@ -1,24 +1,29 @@
-package com.freeman.covid.models;
+package com.freeman.covid.models.entities;
 
+import com.opencsv.bean.CsvBindAndSplitByName;
+import com.opencsv.bean.CsvBindByName;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 import java.util.List;
 import java.util.Objects;
 
-//@Document
+@Document
 public class CountryRegion {
 
     @Id
     private String id;
-    private String name;
+    @CsvBindByName(column = "Country/Region")
+    private String countryRegion;
+//    @CsvRecurse
+    @CsvBindAndSplitByName(elementType = ProvinceState.class)
     private List<ProvinceState> provinceState;
 
     public CountryRegion() {
     }
 
-    public CountryRegion(String name, List<ProvinceState> provinceState) {
-        this.name = name;
+    public CountryRegion(String countryRegion, List<ProvinceState> provinceState) {
+        this.countryRegion = countryRegion;
         this.provinceState = provinceState;
     }
 
@@ -30,12 +35,12 @@ public class CountryRegion {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCountryRegion() {
+        return countryRegion;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCountryRegion(String countryRegion) {
+        this.countryRegion = countryRegion;
     }
 
     public List<ProvinceState> getProvinceState() {
@@ -52,20 +57,20 @@ public class CountryRegion {
         if (!(o instanceof CountryRegion)) return false;
         CountryRegion that = (CountryRegion) o;
         return id.equals(that.id) &&
-                Objects.equals(name, that.name) &&
+                Objects.equals(countryRegion, that.countryRegion) &&
                 Objects.equals(provinceState, that.provinceState);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, provinceState);
+        return Objects.hash(id, countryRegion, provinceState);
     }
 
     @Override
     public String toString() {
         return "CountryRegion{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                ", name='" + countryRegion + '\'' +
                 ", provinceState=" + provinceState +
                 '}';
     }
