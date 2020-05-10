@@ -1,13 +1,14 @@
 package com.freeman.covid.services;
 
+import com.freeman.covid.annotations.fieldmapper.FieldMappingException;
+import com.freeman.covid.annotations.fieldmapper.MappedFieldExtractor;
 import com.freeman.covid.configurations.MongoConfig;
 
 import com.freeman.covid.models.dto.CoronaStateDTO;
-import com.freeman.covid.models.entities.CoronaState;
 import com.freeman.covid.repositories.CoronaStateRepo;
+import com.freeman.covid.utils.FilesRepositoryReader;
 import com.opencsv.*;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.*;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.*;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -27,66 +29,86 @@ import java.util.*;
 @Service
 public class DataLoader {
 
+    private static final String PATH = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/";
+
     @Autowired
     private MongoConfig mongoConfig;
 
     @Autowired
     private CoronaStateRepo coronaStateRepo;
 
-    private static final String PATH = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/";
+    @Autowired
+    private FilesRepositoryReader repositoryReader;
 
     public DataLoader() {
     }
 
+    private List<String> getFilesNames(){
+        List<String> fileNames = repositoryReader.getFileNames();
+        return fileNames;
+    }
 
     @PostConstruct
     @Scheduled(cron = "* 1 * * * *")
-    public void fetchingData() throws IOException, CsvValidationException {
-
-        List<String> fileNames = new ArrayList<>();
-        String fileName1 = "03-21-2020.csv";
-        fileNames.add(fileName1);
-        String fileName2 = "03-22-2020.csv";
-        fileNames.add(fileName2);
-        GitHub gitHub = new GitHubBuilder().withPassword("freemanjava", "Dragon75491_").build();
-        GHRepository ghRepository = gitHub.getRepository("CSSEGISandData/COVID-19");
-        List<GHContent> directoryContent = ghRepository.getDirectoryContent("csse_covid_19_data/csse_covid_19_daily_reports");
-//        if (!directoryContent.isEmpty()) {
-//            for (GHContent content : directoryContent) {
-//                if (content.getName().contains(".csv")) {
-//                    fileNames.add(content.getName());
-//                }
-//            }
-//        }
+    public void fetchingData() throws IOException, CsvValidationException, FieldMappingException {
+        List<String> filesNames = getFilesNames();
         RestTemplate restTemplate = new RestTemplate();
         String url;
-        for (String fileName : fileNames) {
+        for (String fileName : filesNames) {
             log.info("Started to handle the file: " + fileName);
             url = PATH + fileName;
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             String body = response.getBody();
+//            Reader reader = new StringReader(Objects.requireNonNull(body));
 
-//            StringReader reader = new StringReader(Objects.requireNonNull(newBody));
-            StringReader reader = new StringReader(Objects.requireNonNull(body));
+//            CsvToBean<CoronaStateFullDTO> csvToBean = new CsvToBeanBuilder<CoronaStateFullDTO>(reader)
+//                    .withType(CoronaStateFullDTO.class)
+//                    .withThrowExceptions(false)
+//                    .build();
+//            Iterator<CoronaStateFullDTO> iterator = csvToBean.iterator();
+//            List<CoronaStateFullDTO> parse = csvToBean.parse();
+//
+//            System.out.println(parse.size());
+//            parse.stream().forEach((pars) -> {
+//                System.out.println("Parsed data: " + pars.toString());
+//            });
 
-            CsvToBean<CoronaStateDTO> bean = new CsvToBeanBuilder<CoronaStateDTO>(reader).withType(CoronaStateDTO.class).build();
+//            String[] headersArray = new CSVReader(reader).readNext();
+//            List<String> headers = new LinkedList<>(Arrays.asList(headersArray));
+//            Map<String, String> mapping = fieldMapper.getMappedFields(CoronaStateDTO.class, headers);
+            HeaderColumnNameTranslateMappingStrategy<CoronaStateDTO> strategy = new HeaderColumnNameTranslateMappingStrategy<>();
+            strategy.setType(CoronaStateDTO.class);
+//            strategy.setColumnMapping(mapping);
+
+//            CsvToBean<CoronaStateDTO> beans = new CsvToBeanBuilder<CoronaStateDTO>(reader)
+//                    .withSkipLines(1)
+////                    .withType(CoronaStateDTO.class)
+//                    .withMappingStrategy(strategy)
+//                    .withThrowExceptions(false)
+//                    .build();
+//            Iterator<CoronaStateDTO> iterator = beans.iterator();
+//            List<CoronaStateDTO> parsedBeans = beans.parse();
+
+
+//            List<CoronaStateFullDTO> parsedBeansFull = null;
+//            List<CoronaStateDTO> parsedBeans = null;
 
 //            CSVParser parser = new CSVParserBuilder().withSeparator(',').withIgnoreQuotations(true).build();
 //            CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).withCSVParser(parser).build();
 //            List<String[]> records = csvReader.readAll();
             List<String[]> records = new LinkedList<>();
-            List<String[]> headers = new LinkedList<>();
-            CSVReader headerReader = new CSVReader(reader);
-            headers.add(headerReader.readNext());
+//            List<String[]> headers = new LinkedList<>();
+//            CSVReader headerReader = new CSVReader(reader);
+//            headers.add(headerReader.readNext());
 
 //            CSVReaderHeaderAware headerReader = new CSVReaderHeaderAware(reader);
 //            Map<String, String> readMap = headerReader.readMap();
-            CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
-            String [] line;
-            while ((line = csvReader.readNext()) != null){
-//                if (StringUtils.substringBetween(line, "\"", "\""))
-                records.add(line);
-            }
+//            CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
+//            String [] line;
+//            while ((line = csvReader.readNext()) != null){
+////                if (StringUtils.substringBetween(line, "\"", "\""))
+//                records.add(line);
+//            }
 
             List<String> stringsNames = new LinkedList<>();
 //            Map<String, String> modelMapForDB = new LinkedHashMap<>();

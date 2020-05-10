@@ -1,35 +1,40 @@
 package com.freeman.covid.models.dto;
 
-import com.freeman.covid.annotations.fieldmapper.FieldMappingByName;
+import com.opencsv.bean.CsvBindByName;
 
-public class CoronaStateDTO {
+public class CoronaStateFullDTO {
 
-    @FieldMappingByName(header = "Combined_Key")
+    @CsvBindByName(column = "Combined_Key")
     private String combinedKey;
-    @FieldMappingByName(header = "Country/Region|Country_Region")
+    @CsvBindByName(column = "Country/Region")
+//    @CsvBindByName(column = "Country/Region|Country_Region")
     private String countryRegion;
-    @FieldMappingByName(header = "Province/State|Province_State")
+    @CsvBindByName(column = "Province/State")
+//    @CsvBindByName(column = "Province/State|Province_State")
     private String provinceState;
-    @FieldMappingByName(header = "Admin2")
-    private String city; //Admins2
-    @FieldMappingByName(header = "FIPS")
+    @CsvBindByName(column = "Admin2")
+    private String city;
+    @CsvBindByName(column = "FIPS")
     private String FIPS;
-    @FieldMappingByName(header = "Last Update|Last_Update")
+    @CsvBindByName(column = "Last Update")
+//    @CsvBindByName(column = "Last Update|Last_Update")
     private String lastUpdate;
-    @FieldMappingByName(header = "Latitude|Lat")
+    @CsvBindByName(column = "Latitude")
+//    @CsvBindByName(column = "Latitude|Lat")
     private String latitude;
-    @FieldMappingByName(header = "Longitude|Long_")
+    @CsvBindByName(column = "Longitude")
+//    @CsvBindByName(column = "Longitude|Long_")
     private String longitude;
-    @FieldMappingByName(header = "Confirmed")
+    @CsvBindByName(column = "Confirmed")
     private Integer confirmedQuantity;
-    @FieldMappingByName(header = "Deaths")
+    @CsvBindByName(column = "Deaths")
     private Integer deathsQuantity;
-    @FieldMappingByName(header = "Recovered")
+    @CsvBindByName(column = "Recovered")
     private Integer recoveredQuantity;
-    @FieldMappingByName(header = "Active")
+    @CsvBindByName(column = "Active")
     private Integer active;
 
-    public CoronaStateDTO() {
+    public CoronaStateFullDTO() {
     }
 
     public String getCombinedKey() {
